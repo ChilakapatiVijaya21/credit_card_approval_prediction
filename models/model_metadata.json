@@ -1,0 +1,18 @@
+{
+  "model_name": "logistic_regression",
+  "accuracy": 0.984,
+  "features": [
+    "income",
+    "debt_to_income",
+    "credit_score",
+    "age",
+    "employment_years",
+    "loan_balance",
+    "num_inquiries",
+    "prior_defaults",
+    "income_type",
+    "employment_status",
+    "has_coapplicant"
+  ],
+  "target": "approval"
+}

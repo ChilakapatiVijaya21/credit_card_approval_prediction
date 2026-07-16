@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Credit Card Approval Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Credit Card Approval Predictor</h1>
+        <p>
+          Enter applicant details to receive an instant approval or rejection
+          prediction based on the trained machine learning model.
+        </p>
+
+        <form method="post">
+          <div class="grid">
+            <label>Full Name<input type="text" name="full_name" required /></label>
+            
+            <label>Phone<input type="text" name="phone" required /></label>
+            <label>Annual Income<input type="number" name="income" step="1000" required /></label>
+            <label>Debt-to-Income Ratio<input type="number" name="debt_to_income" step="0.01" required /></label>
+            <label>CIBIL Score<input type="number" name="cibil_score" min="300" max="900" required /></label>
+            <label>Credit Score<input type="number" name="credit_score" min="300" max="850" required /></label>
+            <label>Age<input type="number" name="age" min="18" required /></label>
+            <label>Employment Years<input type="number" name="employment_years" step="0.5" required /></label>
+            <label>Loan Balance<input type="number" name="loan_balance" step="1000" required /></label>
+            <label>Credit Inquiries<input type="number" name="num_inquiries" min="0" required /></label>
+            <label>Prior Defaults<input type="number" name="prior_defaults" min="0" max="1" required /></label>
+            <label>
+              Income Type
+              <select name="income_type" required>
+                <option value="" selected disabled>Select income type</option>
+                <option value="Salary">Salary</option>
+                <option value="Business">Business</option>
+                <option value="Retired">Retired</option>
+                <option value="Student">Student</option>
+              </select>
+            </label>
+            <label>
+              Employment Status
+              <select name="employment_status" required>
+                <option value="" selected disabled>Select employment status</option>
+                <option value="Employed">Employed</option>
+                <option value="Self-employed">Self-employed</option>
+                <option value="Unemployed">Unemployed</option>
+                <option value="Student">Student</option>
+              </select>
+            </label>
+            <label>
+              Has Co-applicant
+              <select name="has_coapplicant" required>
+                <option value="" selected disabled>Select an option</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </label>
+          </div>
+
+          <button type="submit">Predict Approval</button>
+        </form>
+
+        {% if result %}
+        <div class="result {{ 'approved' if result.prediction == 'Approved' else 'rejected' }}">
+          <h2>{{ result.prediction }}</h2>
+          <p>Confidence: {{ result.probability }}%</p>
+          <p>Risk score: {{ result.score }}</p>
+          <p>CIBIL score: {{ result.cibil_score }}</p>
+          <p>Reason: {{ result.reason }}</p>
+          <p>Model used: {{ result.model }}</p>
+        </div>
+        {% endif %}
+
+        {% if applications %}
+        <section class="records">
+          <h2>Saved Customer Applications</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for app in applications %}
+                <tr>
+                  <td>{{ app.full_name }}</td>
+                  <td>{{ app.email }}</td>
+                  <td>{{ app.phone }}</td>
+                  <td>{{ app.approval_status }}</td>
+                  <td>{{ app.prediction_score }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        {% endif %}
+
+        <p class="meta">Saved model: {{ metadata.model_name }} | Accuracy: {{ metadata.accuracy }}</p>
+      </section>
+    </main>
+  </body>
+</html>
